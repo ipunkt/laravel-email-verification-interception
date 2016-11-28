@@ -4,6 +4,7 @@
     "type": "library",
     "require": {
 	    "php": "^7.0",
+		"donepm/package-manager": "dev-master",
 		"illuminate/auth": "^5.3",
 		"illuminate/contracts": "^5.3",
 		"illuminate/database": "^5.3",

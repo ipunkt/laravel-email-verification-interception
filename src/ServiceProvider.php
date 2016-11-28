@@ -2,17 +2,26 @@
 
 namespace Ipunkt\Laravel\EmailVerificationInterception;
 
+use DonePM\PackageManager\PackageServiceProvider;
+use DonePM\PackageManager\Support\DefinesMigrations;
 use Ipunkt\Laravel\EmailVerificationInterception\Models\Email;
 
-class ServiceProvider extends \Illuminate\Support\ServiceProvider
+class ServiceProvider extends PackageServiceProvider implements DefinesMigrations
 {
-    public function register()
+    /**
+     * returns namespace of package
+     *
+     * @return string
+     */
+    protected function namespace()
     {
-
+        return 'email-verification';
     }
 
     public function boot()
     {
+        parent::boot();
+
         /** @var \Illuminate\Events\Dispatcher $events */
         $events = $this->app['events'];
 
@@ -27,5 +36,17 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             } catch (\Exception $e) {
             }
         });
+    }
+
+    /**
+     * returns an array of migration paths
+     *
+     * @return array|string[]
+     */
+    public function migrations()
+    {
+        return [
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'migrations',
+        ];
     }
 }
