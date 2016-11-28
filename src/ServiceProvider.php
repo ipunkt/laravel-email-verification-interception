@@ -4,6 +4,7 @@ namespace Ipunkt\Laravel\EmailVerificationInterception;
 
 use DonePM\PackageManager\PackageServiceProvider;
 use DonePM\PackageManager\Support\DefinesMigrations;
+use Illuminate\Auth\Events\Registered;
 use Ipunkt\Laravel\EmailVerificationInterception\Models\Email;
 
 class ServiceProvider extends PackageServiceProvider implements DefinesMigrations
@@ -25,9 +26,10 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
         /** @var \Illuminate\Events\Dispatcher $events */
         $events = $this->app['events'];
 
-        $events->listen(\Illuminate\Auth\Events\Registered::class, function ($user) {
+        $events->listen(\Illuminate\Auth\Events\Registered::class, function (Registered $registered) {
             try {
-                if (isset($user->email) && !empty($user->email)) {
+                $user = $registered->user;
+                if ($user !== null && isset($user->email) && ! empty($user->email)) {
                     Email::create([
                         'user_id' => $user->id,
                         'email' => $user->email,
