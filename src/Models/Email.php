@@ -52,8 +52,6 @@ class Email extends Model
      */
     protected $guarded = [
         'id',
-        'status',
-        'token',
     ];
 
     /**
@@ -104,6 +102,11 @@ class Email extends Model
         return $this->emailStatus;
     }
 
+    /**
+     * email attribute mutator
+     *
+     * @param string $value
+     */
     public function setEmailAttribute($value) {
         $this->attributes['email'] = mb_strtolower(trim($value));
     }
