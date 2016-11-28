@@ -7,9 +7,9 @@ use DonePM\PackageManager\Support\DefinesConfigurations;
 use DonePM\PackageManager\Support\DefinesMigrations;
 use DonePM\PackageManager\Support\DefinesViews;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Mail;
-use Ipunkt\Laravel\EmailVerificationInterception\Mail\ActivateEmail;
-use Ipunkt\Laravel\EmailVerificationInterception\Models\Email;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Mail\MailableMailer;
+use Ipunkt\Laravel\EmailVerificationInterception\Services\EmailService;
 
 class ServiceProvider extends PackageServiceProvider implements DefinesMigrations, DefinesConfigurations, DefinesViews
 {
@@ -39,20 +39,27 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
     {
         parent::boot();
 
+        $this->app->singleton(EmailService::class, function () {
+            /** @var MailableMailer $mailer */
+            $mailer = $this->app['mailer'];
+
+            return new EmailService($mailer);
+        });
+
+        /** @var EmailService $emailService */
+        $emailService = $this->app[EmailService::class];
+
         /** @var \Illuminate\Events\Dispatcher $events */
         $events = $this->app['events'];
 
-        $events->listen(\Illuminate\Auth\Events\Registered::class, function (Registered $registered) {
+        $events->listen(Registered::class, function (Registered $registered) use ($emailService) {
             try {
                 $user = $registered->user;
-                if ($user !== null && isset($user->email) && ! empty($user->email)) {
-                    $email = Email::create([
-                        'user_id' => $user->id,
-                        'email' => $user->email,
-                    ]);
-
-                    Mail::to($user->email)
-                        ->queue(new ActivateEmail($email));
+                if ($user instanceof Model
+                    && isset($user->email)
+                    && ! empty($user->email)
+                ) {
+                    $emailService->register($user->getKey(), $user->email);
                 }
             } catch (\Exception $e) {
             }
@@ -93,5 +100,10 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
         return [
             $this->packagePath . 'resources' . DIRECTORY_SEPARATOR . 'views',
         ];
+    }
+
+    public function provides()
+    {
+        return [EmailService::class,];
     }
 }
