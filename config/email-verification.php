@@ -30,6 +30,6 @@ return [
         /**
          * mail template
          */
-        'view' => 'emails.registration.activate',
+        'view' => 'email-verification::emails.registration.activate',
     ],
 ];
