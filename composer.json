@@ -4,10 +4,11 @@
     "type": "library",
     "require": {
 	    "php": "^7.0",
-	    "illuminate/contracts": "^5.3",
-	    "illuminate/support": "^5.3",
-        "illuminate/database": "^5.3",
-        "nesbot/carbon": "^1.21"
+		"illuminate/auth": "^5.3",
+		"illuminate/contracts": "^5.3",
+		"illuminate/database": "^5.3",
+		"illuminate/support": "^5.3",
+		"nesbot/carbon": "^1.21"
     },
 	"autoload": {
 		"psr-4": {
