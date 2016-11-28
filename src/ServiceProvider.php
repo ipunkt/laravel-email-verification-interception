@@ -5,13 +5,21 @@ namespace Ipunkt\Laravel\EmailVerificationInterception;
 use DonePM\PackageManager\PackageServiceProvider;
 use DonePM\PackageManager\Support\DefinesConfigurations;
 use DonePM\PackageManager\Support\DefinesMigrations;
+use DonePM\PackageManager\Support\DefinesViews;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Mail;
 use Ipunkt\Laravel\EmailVerificationInterception\Mail\ActivateEmail;
 use Ipunkt\Laravel\EmailVerificationInterception\Models\Email;
 
-class ServiceProvider extends PackageServiceProvider implements DefinesMigrations, DefinesConfigurations
+class ServiceProvider extends PackageServiceProvider implements DefinesMigrations, DefinesConfigurations, DefinesViews
 {
+    /**
+     * package path
+     *
+     * @var string
+     */
+    private $packagePath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+
     /**
      * returns namespace of package
      *
@@ -59,7 +67,7 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
     public function migrations()
     {
         return [
-            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations',
+            $this->packagePath . 'database' . DIRECTORY_SEPARATOR . 'migrations',
         ];
     }
 
@@ -71,7 +79,19 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
     public function configurationFiles()
     {
         return [
-            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'email-verification.php' => 'email-verification.php',
+            $this->packagePath . 'config' . DIRECTORY_SEPARATOR . 'email-verification.php' => 'email-verification.php',
+        ];
+    }
+
+    /**
+     * returns view file paths
+     *
+     * @return array|string[]
+     */
+    public function views()
+    {
+        return [
+            $this->packagePath . 'resources' . DIRECTORY_SEPARATOR . 'views',
         ];
     }
 }
