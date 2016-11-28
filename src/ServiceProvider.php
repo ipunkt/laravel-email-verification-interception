@@ -3,11 +3,14 @@
 namespace Ipunkt\Laravel\EmailVerificationInterception;
 
 use DonePM\PackageManager\PackageServiceProvider;
+use DonePM\PackageManager\Support\DefinesConfigurations;
 use DonePM\PackageManager\Support\DefinesMigrations;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Mail;
+use Ipunkt\Laravel\EmailVerificationInterception\Mail\ActivateEmail;
 use Ipunkt\Laravel\EmailVerificationInterception\Models\Email;
 
-class ServiceProvider extends PackageServiceProvider implements DefinesMigrations
+class ServiceProvider extends PackageServiceProvider implements DefinesMigrations, DefinesConfigurations
 {
     /**
      * returns namespace of package
@@ -19,6 +22,11 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
         return 'email-verification';
     }
 
+    /**
+     * Perform post-registration booting of services.
+     *
+     * @return void
+     */
     public function boot()
     {
         parent::boot();
@@ -30,10 +38,13 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
             try {
                 $user = $registered->user;
                 if ($user !== null && isset($user->email) && ! empty($user->email)) {
-                    Email::create([
+                    $email = Email::create([
                         'user_id' => $user->id,
                         'email' => $user->email,
                     ]);
+
+                    Mail::to($user->email)
+                        ->queue(new ActivateEmail($email));
                 }
             } catch (\Exception $e) {
             }
@@ -49,6 +60,18 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
     {
         return [
             __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations',
+        ];
+    }
+
+    /**
+     * returns an array of config files with their corresponding config_path(name)
+     *
+     * @return array
+     */
+    public function configurationFiles()
+    {
+        return [
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'email-verification.php' => 'email-verification.php',
         ];
     }
 }
