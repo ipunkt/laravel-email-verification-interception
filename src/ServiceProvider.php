@@ -41,7 +41,7 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
 
         $this->app->singleton(EmailService::class, function () {
             /** @var MailableMailer $mailer */
-            $mailer = $this->app['mailer'];
+            $mailer = $this->app[MailableMailer::class];
 
             return new EmailService($mailer);
         });
