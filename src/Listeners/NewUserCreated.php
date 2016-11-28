@@ -24,10 +24,12 @@ class NewUserCreated implements ShouldQueue
      */
     public function handle(Registered $event)
     {
-        if ($event->user instanceof User) {
-            $email = Email::create([
+        try {
+            Email::create([
+                'user_id' => $event->user->id,
                 'email' => $event->user->email,
             ]);
+        } catch (\Exception $e) {
         }
     }
 }
