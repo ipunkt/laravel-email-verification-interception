@@ -1,9 +1,9 @@
 {
-    "name": "ipunkt/laravel-email-verification-interception",
-    "description": "Email Verification and Mailer Interception package for controlling email sending.",
-    "type": "library",
-    "require": {
-	    "php": "^7.0",
+	"name": "ipunkt/laravel-email-verification-interception",
+	"description": "Email Verification and Mailer Interception package for controlling email sending.",
+	"type": "library",
+	"require": {
+		"php": "^7.0",
 		"ipunkt/laravel-package-manager": "^0.1",
 		"illuminate/auth": "^5.3",
 		"illuminate/contracts": "^5.3",
@@ -12,18 +12,18 @@
 		"illuminate/mail": "^5.3",
 		"illuminate/support": "^5.3",
 		"nesbot/carbon": "^1.21"
-    },
+	},
 	"autoload": {
 		"psr-4": {
 			"Ipunkt\\Laravel\\EmailVerificationInterception\\": "src/"
 		}
 	},
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Robert Kummer",
-            "email": "rok@ipunkt.biz"
-        }
-    ],
-    "minimum-stability": "stable"
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Robert Kummer",
+			"email": "rok@ipunkt.biz"
+		}
+	],
+	"minimum-stability": "stable"
 }
