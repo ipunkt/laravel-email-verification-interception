@@ -4,7 +4,7 @@
 	"type": "library",
 	"require": {
 		"php": "^7.0",
-		"ipunkt/laravel-package-manager": "^0.1",
+		"ipunkt/laravel-package-manager": "^0.2.0",
 		"illuminate/auth": "^5.3",
 		"illuminate/contracts": "^5.3",
 		"illuminate/database": "^5.3",
