@@ -2,10 +2,10 @@
 
 namespace Ipunkt\Laravel\EmailVerificationInterception;
 
-use DonePM\PackageManager\PackageServiceProvider;
-use DonePM\PackageManager\Support\DefinesConfigurations;
-use DonePM\PackageManager\Support\DefinesMigrations;
-use DonePM\PackageManager\Support\DefinesViews;
+use Ipunkt\Laravel\PackageManager\PackageServiceProvider;
+use Ipunkt\Laravel\PackageManager\Support\DefinesConfigurations;
+use Ipunkt\Laravel\PackageManager\Support\DefinesMigrations;
+use Ipunkt\Laravel\PackageManager\Support\DefinesViews;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\MailableMailer;
