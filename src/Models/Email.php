@@ -85,7 +85,7 @@ class Email extends Model
      */
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(config('email-verification.user-model', 'App\User'));
     }
 
     /**
