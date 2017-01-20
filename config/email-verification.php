@@ -32,4 +32,9 @@ return [
          */
         'view' => 'email-verification::emails.registration.activate',
     ],
+
+    /**
+     * Which is your user model for granting access to?
+     */
+    'user-model' => 'App\User',
 ];
