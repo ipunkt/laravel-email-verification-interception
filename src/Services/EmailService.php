@@ -2,6 +2,7 @@
 
 namespace Ipunkt\Laravel\EmailVerificationInterception\Services;
 
+use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\MailableMailer;
 use Ipunkt\Laravel\EmailVerificationInterception\Mail\ActivateEmail;
@@ -29,8 +30,9 @@ class EmailService
      *
      * @param Model|int $user
      * @param string $email
+     * @param Mailable $activationMail
      */
-    public function register($user, string $email)
+    public function register($user, string $email, Mailable $activationMail = null)
     {
         $userId = ($user instanceof Model)
             ? $user->getKey()
@@ -45,7 +47,11 @@ class EmailService
             'email' => $email,
         ]);
 
+        $activateMail = ($activationMail === null)
+            ? new ActivateEmail($email)
+            : $activationMail;
+
         $this->mailer->to($email)
-            ->queue(new ActivateEmail($email));
+            ->queue($activateMail);
     }
 }
