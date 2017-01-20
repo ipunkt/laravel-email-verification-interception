@@ -81,7 +81,7 @@ class Email extends Model
     /**
      * returns related user
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
