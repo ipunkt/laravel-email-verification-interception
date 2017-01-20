@@ -6,6 +6,11 @@ return [
      */
     'activation' => [
         /**
+         * shall we register the event listening our-self?
+         */
+        'register-event-listening' => true,
+
+        /**
          * Mail subject
          */
         'subject' => 'Activate your email address',

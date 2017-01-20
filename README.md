@@ -38,6 +38,10 @@ The main configuration settings handle the activation mail stuff.
 
 ### Activation section
 
+#### register-event-listening
+
+We can register event listening by default. So every time a Registered event is fired, the email service interacts and sends a mailable for account confirmation.
+
 #### subject
 
 Mail subject for activation mail. You can change the subject. This subject will be used for the shipped ActivateEmail mailable.

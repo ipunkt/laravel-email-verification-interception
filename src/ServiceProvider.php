@@ -2,14 +2,14 @@
 
 namespace Ipunkt\Laravel\EmailVerificationInterception;
 
-use Ipunkt\Laravel\PackageManager\PackageServiceProvider;
-use Ipunkt\Laravel\PackageManager\Support\DefinesConfigurations;
-use Ipunkt\Laravel\PackageManager\Support\DefinesMigrations;
-use Ipunkt\Laravel\PackageManager\Support\DefinesViews;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\MailableMailer;
 use Ipunkt\Laravel\EmailVerificationInterception\Services\EmailService;
+use Ipunkt\Laravel\PackageManager\PackageServiceProvider;
+use Ipunkt\Laravel\PackageManager\Support\DefinesConfigurations;
+use Ipunkt\Laravel\PackageManager\Support\DefinesMigrations;
+use Ipunkt\Laravel\PackageManager\Support\DefinesViews;
 
 class ServiceProvider extends PackageServiceProvider implements DefinesMigrations, DefinesConfigurations, DefinesViews
 {
@@ -19,16 +19,6 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
      * @var string
      */
     private $packagePath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-
-    /**
-     * returns namespace of package
-     *
-     * @return string
-     */
-    protected function namespace()
-    {
-        return 'email-verification';
-    }
 
     /**
      * Perform post-registration booting of services.
@@ -46,24 +36,9 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
             return new EmailService($mailer);
         });
 
-        /** @var EmailService $emailService */
-        $emailService = $this->app[EmailService::class];
-
-        /** @var \Illuminate\Events\Dispatcher $events */
-        $events = $this->app['events'];
-
-        $events->listen(Registered::class, function (Registered $registered) use ($emailService) {
-            try {
-                $user = $registered->user;
-                if ($user instanceof Model
-                    && isset($user->email)
-                    && ! empty($user->email)
-                ) {
-                    $emailService->register($user->getKey(), $user->email);
-                }
-            } catch (\Exception $e) {
-            }
-        });
+        if (config('email-verification.activation.register-event-listening', true) === true) {
+            $this->registerEventListener();
+        }
     }
 
     /**
@@ -105,5 +80,40 @@ class ServiceProvider extends PackageServiceProvider implements DefinesMigration
     public function provides()
     {
         return [EmailService::class,];
+    }
+
+    /**
+     * returns namespace of package
+     *
+     * @return string
+     */
+    protected function namespace()
+    {
+        return 'email-verification';
+    }
+
+    /**
+     * registers event listener
+     */
+    private function registerEventListener()
+    {
+        /** @var EmailService $emailService */
+        $emailService = $this->app[EmailService::class];
+
+        /** @var \Illuminate\Events\Dispatcher $events */
+        $events = $this->app['events'];
+
+        $events->listen(Registered::class, function (Registered $registered) use ($emailService) {
+            try {
+                $user = $registered->user;
+                if ($user instanceof Model
+                    && isset($user->email)
+                    && !empty($user->email)
+                ) {
+                    $emailService->register($user->getKey(), $user->email);
+                }
+            } catch (\Exception $e) {
+            }
+        });
     }
 }
